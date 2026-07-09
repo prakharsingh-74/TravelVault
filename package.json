@@ -1,6 +1,7 @@
 {
   "name": "travelvault",
   "private": true,
+  "packageManager": "pnpm@11.8.0",
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",

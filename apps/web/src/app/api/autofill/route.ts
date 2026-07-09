@@ -10,7 +10,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'URL and Passenger ID are required.' }, { status: 400 });
     }
 
-    const passengerData = await db.select().from(passengers).where(eq(passengers.id, parseInt(passengerId)));
+    const passengerData = await db.select().from(passengers).where(eq(passengers.id, passengerId));
     if (passengerData.length === 0) {
       return NextResponse.json({ error: 'Passenger not found.' }, { status: 404 });
     }
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
 
     // Map Age
     if (rules.fields.age && p.dob) {
-      const age = calculateAge(p.dob.toISOString().split('T')[0]);
+      const age = calculateAge(p.dob);
       rules.fields.age.forEach((rule) => {
         mappedFields.push({ selector: rule.selector, value: age.toString(), type: rule.type });
       });

@@ -41,7 +41,7 @@ export async function POST(request: Request) {
         .update(passengers)
         .set({
           name,
-          dob: new Date(dob),
+          dob,
           gender,
           nationality,
           aadhaar: aadhaar || null,
@@ -59,8 +59,9 @@ export async function POST(request: Request) {
       result = await db
         .insert(passengers)
         .values({
+          id: crypto.randomUUID(),
           name,
-          dob: new Date(dob),
+          dob,
           gender,
           nationality,
           aadhaar: aadhaar || null,
@@ -82,7 +83,7 @@ export async function POST(request: Request) {
       await indexPassenger({
         id: savedPassenger.id,
         name: savedPassenger.name,
-        dob: savedPassenger.dob.toISOString().split('T')[0],
+        dob: savedPassenger.dob,
         gender: savedPassenger.gender,
         nationality: savedPassenger.nationality,
         aadhaar: savedPassenger.aadhaar,

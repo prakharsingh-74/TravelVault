@@ -25,9 +25,10 @@ export async function POST(request: Request) {
     const result = await db
       .insert(documents)
       .values({
+        id: crypto.randomUUID(),
         name,
         type,
-        passengerId: parseInt(passengerId),
+        passengerId,
         filePath: filePath || '',
         ocrText: ocrText || '',
         createdAt: new Date(),
@@ -38,8 +39,11 @@ export async function POST(request: Request) {
     const savedDoc = result[0];
 
     // Fetch passenger name to create a better semantic memory content
-    const passengerData = await db.select().from(passengers).where(eq(passengers.id, savedDoc.passengerId));
-    const passengerName = passengerData[0]?.name || 'Unknown Passenger';
+    let passengerName = 'Unknown Passenger';
+    if (savedDoc.passengerId) {
+      const passengerData = await db.select().from(passengers).where(eq(passengers.id, savedDoc.passengerId));
+      passengerName = passengerData[0]?.name || 'Unknown Passenger';
+    }
 
     // Index document in local semantic memory
     try {
