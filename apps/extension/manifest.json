@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "TravelVault Autofill",
+  "version": "1.0.0",
+  "description": "Secure, local-first passenger profile autofill for travel sites like IRCTC and MakeMyTrip.",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "http://localhost:3000/*",
+    "*://*.irctc.co.in/*",
+    "*://*.makemytrip.com/*",
+    "*://*.makemytrip.co.in/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "TravelVault Autofill"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.irctc.co.in/*",
+        "*://*.makemytrip.com/*",
+        "*://*.makemytrip.co.in/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ]
+}
