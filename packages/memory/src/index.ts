@@ -1,13 +1,12 @@
 import { db, memories } from '@travelvault/db';
 import { eq } from 'drizzle-orm';
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
-
 /**
  * Generate embedding vector using Gemini API
  */
 export async function getEmbedding(text: string): Promise<number[]> {
-  if (!GEMINI_API_KEY) {
+  const apiKey = process.env.GEMINI_API_KEY || '';
+  if (!apiKey) {
     console.warn('GEMINI_API_KEY is not set. Using a fallback mock embedding.');
     // Fallback mock embedding: simple hash-based vector of size 768
     const vector = new Array(768).fill(0);
@@ -27,7 +26,7 @@ export async function getEmbedding(text: string): Promise<number[]> {
 
   try {
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key=${GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -55,13 +54,14 @@ export async function getEmbedding(text: string): Promise<number[]> {
  * Generate LLM text generation response from Gemini
  */
 export async function generateText(prompt: string, systemInstruction = ''): Promise<string> {
-  if (!GEMINI_API_KEY) {
+  const apiKey = process.env.GEMINI_API_KEY || '';
+  if (!apiKey) {
     return 'Error: GEMINI_API_KEY is required to run AI search queries. Please configure it in Settings.';
   }
 
   try {
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
