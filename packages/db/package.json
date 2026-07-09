@@ -1,0 +1,21 @@
+{
+  "name": "@travelvault/db",
+  "version": "1.0.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.0.0",
+    "drizzle-orm": "^0.31.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.22.0",
+    "@types/better-sqlite3": "^7.6.10",
+    "typescript": "^5.0.0"
+  }
+}

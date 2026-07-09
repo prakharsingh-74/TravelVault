@@ -1,0 +1,43 @@
+# Dependencies
+node_modules
+.pnpm-store
+
+# Next.js build output
+.next
+dist
+out
+
+# Tauri build output
+src-tauri/target
+apps/desktop/src-tauri/target
+
+# Database
+storage/*.db
+storage/*.db-journal
+storage/*.db-shm
+storage/*.db-wal
+
+# Local Files / Uploads
+storage/documents/*
+!storage/documents/.gitkeep
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDEs
+.vscode
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# System Files
+Thumbs.db
+desktop.ini
+.DS_Store
