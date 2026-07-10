@@ -1,11 +1,53 @@
-import { db, memories } from '@travelvault/db';
+import { db, memories, settings } from '@travelvault/db';
 import { eq } from 'drizzle-orm';
 
 /**
- * Generate embedding vector using Gemini API
+ * Fetch provider configuration dynamically from SQLite database and auto-detect active provider
+ */
+async function getProviderConfig() {
+  try {
+    const list = await db.select().from(settings);
+    const config = list.reduce((acc: any, cur) => {
+      acc[cur.key] = cur.value;
+      return acc;
+    }, {});
+    
+    const geminiApiKey = config.gemini_api_key || process.env.GEMINI_API_KEY || '';
+    const groqApiKey = config.groq_api_key || process.env.GROQ_API_KEY || '';
+    
+    // Auto-detect provider: Prefer Groq if key is present, otherwise use Gemini
+    let provider = 'gemini';
+    if (groqApiKey) {
+      provider = 'groq';
+    } else if (geminiApiKey) {
+      provider = 'gemini';
+    }
+
+    return {
+      provider,
+      geminiApiKey,
+      groqApiKey,
+      groqModel: config.groq_model || 'llama-3.3-70b-versatile',
+    };
+  } catch (e) {
+    const geminiApiKey = process.env.GEMINI_API_KEY || '';
+    const groqApiKey = process.env.GROQ_API_KEY || '';
+    return {
+      provider: groqApiKey ? 'groq' : 'gemini',
+      geminiApiKey,
+      groqApiKey,
+      groqModel: 'llama-3.3-70b-versatile',
+    };
+  }
+}
+
+/**
+ * Generate embedding vector using Gemini API or hash-based fallback
  */
 export async function getEmbedding(text: string): Promise<number[]> {
-  const apiKey = process.env.GEMINI_API_KEY || '';
+  const config = await getProviderConfig();
+  const apiKey = config.geminiApiKey;
+
   if (!apiKey) {
     console.warn('GEMINI_API_KEY is not set. Using a fallback mock embedding.');
     // Fallback mock embedding: simple hash-based vector of size 768
@@ -51,10 +93,51 @@ export async function getEmbedding(text: string): Promise<number[]> {
 }
 
 /**
- * Generate LLM text generation response from Gemini
+ * Generate LLM text generation response from active provider (Gemini or Groq)
  */
 export async function generateText(prompt: string, systemInstruction = ''): Promise<string> {
-  const apiKey = process.env.GEMINI_API_KEY || '';
+  const config = await getProviderConfig();
+
+  if (config.provider === 'groq') {
+    const apiKey = config.groqApiKey;
+    if (!apiKey) {
+      return 'Error: GROQ_API_KEY is required to run Groq assistant queries. Please configure it in Settings.';
+    }
+
+    try {
+      const response = await fetch(
+        'https://api.groq.com/openai/v1/chat/completions',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`
+          },
+          body: JSON.stringify({
+            model: config.groqModel || 'llama-3.3-70b-versatile',
+            messages: [
+              ...(systemInstruction ? [{ role: 'system', content: systemInstruction }] : []),
+              { role: 'user', content: prompt }
+            ],
+            temperature: 0.2
+          })
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Groq API request failed: ${response.statusText}`);
+      }
+
+      const data = (await response.json()) as any;
+      return data.choices?.[0]?.message?.content || 'No response generated.';
+    } catch (error: any) {
+      console.error('Error generating text from Groq:', error);
+      return `Error generating Groq AI response: ${error.message}`;
+    }
+  }
+
+  // Fallback/Default: Google Gemini
+  const apiKey = config.geminiApiKey;
   if (!apiKey) {
     return 'Error: GEMINI_API_KEY is required to run AI search queries. Please configure it in Settings.';
   }

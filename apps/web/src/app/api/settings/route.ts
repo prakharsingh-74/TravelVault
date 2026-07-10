@@ -18,7 +18,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { action, key, value } = body;
+    const { action, key, value, settings: settingsList } = body;
 
     // Handle full database reset
     if (action === 'reset') {
@@ -28,11 +28,38 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: true, message: 'Database reset completed.' });
     }
 
-    if (!key) {
-      return NextResponse.json({ error: 'Key is required.' }, { status: 400 });
+    // Support batch saving of multiple settings keys
+    if (settingsList && typeof settingsList === 'object') {
+      for (const [k, v] of Object.entries(settingsList)) {
+        const valStr = String(v || '');
+        const existing = await db.select().from(settings).where(eq(settings.key, k));
+        
+        if (existing.length > 0) {
+          await db
+            .update(settings)
+            .set({ value: valStr, updatedAt: new Date() })
+            .where(eq(settings.key, k));
+        } else {
+          await db
+            .insert(settings)
+            .values({ key: k, value: valStr, updatedAt: new Date() });
+        }
+
+        // Keep process environment in sync
+        if (k === 'gemini_api_key') {
+          process.env.GEMINI_API_KEY = valStr;
+        } else if (k === 'groq_api_key') {
+          process.env.GROQ_API_KEY = valStr;
+        }
+      }
+      return NextResponse.json({ success: true });
     }
 
-    // Check if key exists
+    // Single key-value pair fallback
+    if (!key) {
+      return NextResponse.json({ error: 'Key or settings object is required.' }, { status: 400 });
+    }
+
     const existing = await db.select().from(settings).where(eq(settings.key, key));
 
     if (existing.length > 0) {
@@ -46,9 +73,11 @@ export async function POST(request: Request) {
         .values({ key, value: value || '', updatedAt: new Date() });
     }
 
-    // If saving Gemini API key, update it globally in the process environment so memory functions pick it up immediately
-    if (key === 'gemini_api_key' && value) {
-      process.env.GEMINI_API_KEY = value;
+    // Sync process env
+    if (key === 'gemini_api_key') {
+      process.env.GEMINI_API_KEY = value || '';
+    } else if (key === 'groq_api_key') {
+      process.env.GROQ_API_KEY = value || '';
     }
 
     return NextResponse.json({ success: true });
