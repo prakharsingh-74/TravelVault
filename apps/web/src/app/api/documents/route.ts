@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { db, documents, passengers } from '@travelvault/db';
 import { indexDocument } from '@travelvault/memory';
 import { eq } from 'drizzle-orm';
+import { extractTextFromPdf } from '../../../lib/pdfExtractor';
+import { writeFile, mkdir } from 'fs/promises';
+import { join } from 'path';
 
 export async function GET() {
   try {
@@ -14,8 +17,58 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const { name, type, passengerId, filePath, ocrText } = body;
+    const contentType = request.headers.get('content-type') || '';
+    
+    let name = '';
+    let type = '';
+    let passengerId = '';
+    let ocrText = '';
+    let originalFileName = '';
+    let savedFilePath = '';
+
+    if (contentType.includes('multipart/form-data')) {
+      const formData = await request.formData();
+      name = formData.get('name') as string;
+      type = formData.get('type') as string;
+      passengerId = formData.get('passengerId') as string;
+      ocrText = (formData.get('ocrText') as string) || '';
+      
+      const file = formData.get('file') as File | null;
+      if (file) {
+        originalFileName = file.name;
+        const fileBuffer = Buffer.from(await file.arrayBuffer());
+
+        // Ensure upload directory exists
+        const uploadDir = join(process.cwd(), 'public', 'uploads');
+        await mkdir(uploadDir, { recursive: true });
+
+        // Save file locally with UUID to avoid collision
+        const fileExtension = originalFileName.split('.').pop() || '';
+        const savedFileName = `${crypto.randomUUID()}.${fileExtension}`;
+        const absolutePath = join(uploadDir, savedFileName);
+        
+        await writeFile(absolutePath, fileBuffer);
+        savedFilePath = `/uploads/${savedFileName}`;
+
+        // If it's a PDF, try to extract the text server-side if client didn't supply it
+        if (originalFileName.toLowerCase().endsWith('.pdf') && !ocrText) {
+          try {
+            ocrText = extractTextFromPdf(fileBuffer);
+          } catch (pdfErr) {
+            console.error('Failed to parse PDF text:', pdfErr);
+            ocrText = 'PDF loaded (unparseable or image-only PDF)';
+          }
+        }
+      }
+    } else {
+      // Fallback to JSON request
+      const body = await request.json();
+      name = body.name;
+      type = body.type;
+      passengerId = body.passengerId;
+      savedFilePath = body.filePath || '';
+      ocrText = body.ocrText || '';
+    }
 
     if (!name || !type || !passengerId) {
       return NextResponse.json({ error: 'Name, Type, and Passenger ID are required.' }, { status: 400 });
@@ -29,7 +82,7 @@ export async function POST(request: Request) {
         name,
         type,
         passengerId,
-        filePath: filePath || '',
+        filePath: savedFilePath || originalFileName || '',
         ocrText: ocrText || '',
         createdAt: new Date(),
         updatedAt: new Date()

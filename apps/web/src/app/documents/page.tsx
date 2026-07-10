@@ -10,7 +10,6 @@ export default function DocumentsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   
-  // OCR and Form State
   const [docName, setDocName] = useState('');
   const [docType, setDocType] = useState('Passport');
   const [passengerId, setPassengerId] = useState('');
@@ -62,11 +61,15 @@ export default function DocumentsPage() {
     setSelectedFile(file);
     setDocName(file.name.split('.')[0]);
     
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImagePreview(reader.result as string);
-    };
-    reader.readAsDataURL(file);
+    if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+      setImagePreview('pdf');
+    } else {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -89,13 +92,13 @@ export default function DocumentsPage() {
     e.preventDefault();
     setIsDragging(false);
     const file = e.dataTransfer.files?.[0];
-    if (file && file.type.startsWith('image/')) {
+    if (file && (file.type.startsWith('image/') || file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf'))) {
       handleFile(file);
     }
   };
 
   const runOcr = async () => {
-    if (!selectedFile) return;
+    if (!selectedFile || imagePreview === 'pdf') return;
     setIsOcrRunning(true);
     setOcrStatus('Initializing OCR Engine...');
     setOcrProgress(15);
@@ -128,16 +131,18 @@ export default function DocumentsPage() {
     }
 
     try {
+      const formData = new FormData();
+      formData.append('name', docName);
+      formData.append('type', docType);
+      formData.append('passengerId', passengerId);
+      formData.append('ocrText', ocrText);
+      if (selectedFile) {
+        formData.append('file', selectedFile);
+      }
+
       const res = await fetch('/api/documents', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: docName,
-          type: docType,
-          passengerId,
-          filePath: selectedFile ? selectedFile.name : '',
-          ocrText,
-        }),
+        body: formData,
       });
 
       if (res.ok) {
@@ -180,7 +185,7 @@ export default function DocumentsPage() {
             Travel Documents
           </h1>
           <p className="text-xs text-text-muted mt-1">
-            Store passports and Visas. Use browser-side OCR scanning to index details securely.
+            Store passports, Visas, and PDFs. Use browser-side OCR for images or native server-side parsing for PDFs.
           </p>
         </div>
         <button
@@ -205,7 +210,7 @@ export default function DocumentsPage() {
         <div className="text-center py-20 text-text-muted text-xs">Loading document store...</div>
       ) : documents.length === 0 ? (
         <div className="glass-panel rounded-2xl py-20 text-center text-text-muted text-xs border border-border-main">
-          No documents scanned. Upload passport images or files to get started.
+          No documents scanned. Upload passenger images, PDF files or boarding documents to get started.
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -244,7 +249,7 @@ export default function DocumentsPage() {
                     </div>
                     {d.ocrText && (
                       <div>
-                        <span className="text-text-muted block mb-0.5 text-[9px] uppercase font-bold tracking-wider">Extracted OCR Text</span>
+                        <span className="text-text-muted block mb-0.5 text-[9px] uppercase font-bold tracking-wider">Extracted Details</span>
                         <div className="bg-input-bg p-3 rounded-lg border border-input-border font-mono text-[9px] text-text-muted max-h-24 overflow-y-auto whitespace-pre-wrap">
                           {d.ocrText}
                         </div>
@@ -255,7 +260,19 @@ export default function DocumentsPage() {
 
                 <div className="mt-4 pt-3 border-t border-border-main text-[9px] text-text-muted flex justify-between items-center">
                   <span>Scanned {new Date(d.createdAt).toLocaleDateString()}</span>
-                  <span className="text-emerald-400 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded">Indexed</span>
+                  <div className="flex gap-2">
+                    {d.filePath && (
+                      <a
+                        href={d.filePath}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[#3b82f6] font-semibold hover:underline"
+                      >
+                        Open File
+                      </a>
+                    )}
+                    <span className="text-emerald-400 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded">Indexed</span>
+                  </div>
                 </div>
               </div>
             );
@@ -270,7 +287,7 @@ export default function DocumentsPage() {
             <div className="p-5 border-b border-border-main flex justify-between items-center bg-sidebar-bg">
               <div>
                 <h2 className="text-base font-bold text-text-title">Index New Travel Document</h2>
-                <span className="text-[10px] text-text-muted block mt-0.5">Link a passport/ID image and run local browser Tesseract OCR</span>
+                <span className="text-[10px] text-text-muted block mt-0.5">Link a passport/ID image or PDF file</span>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
@@ -344,14 +361,14 @@ export default function DocumentsPage() {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                       </svg>
                       <span className="text-xs text-text-muted block font-semibold">
-                        {selectedFile ? selectedFile.name : 'Select or drag document image'}
+                        {selectedFile ? selectedFile.name : 'Select or drag file'}
                       </span>
-                      <span className="text-[9px] text-text-muted mt-1 block">Supports PNG, JPG, JPEG</span>
+                      <span className="text-[9px] text-text-muted mt-1 block">Supports PDF, PNG, JPG, JPEG</span>
                       <input
                         type="file"
                         ref={fileInputRef}
                         onChange={handleFileChange}
-                        accept="image/*"
+                        accept="image/*,.pdf"
                         className="hidden"
                       />
                     </div>
@@ -361,33 +378,48 @@ export default function DocumentsPage() {
                 {/* Preview / OCR details */}
                 <div className="space-y-4">
                   <div className="relative border border-input-border rounded-xl overflow-hidden bg-input-bg h-48 flex items-center justify-center ocr-scanner-overlay">
-                    {imagePreview ? (
+                    {imagePreview === 'pdf' ? (
+                      <div className="flex flex-col items-center gap-2 p-4 text-center">
+                        <svg className="w-14 h-14 text-rose-500" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                        </svg>
+                        <span className="text-xs text-text-title font-semibold max-w-[220px] truncate">{selectedFile?.name}</span>
+                        <span className="text-[10px] text-text-muted">PDF Document</span>
+                      </div>
+                    ) : imagePreview ? (
                       <>
                         <img src={imagePreview} alt="Preview" className="max-h-full object-contain" />
                         {isOcrRunning && <div className="ocr-scanner-line"></div>}
                       </>
                     ) : (
-                      <span className="text-xs text-text-muted">No Document Selected</span>
+                      <span className="text-xs text-text-muted">No File Selected</span>
                     )}
                   </div>
 
                   {selectedFile && (
                     <div className="space-y-3">
-                      <button
-                        type="button"
-                        onClick={runOcr}
-                        disabled={isOcrRunning}
-                        className="w-full py-2.5 rounded-lg text-xs font-semibold bg-input-bg border border-border-main hover:border-text-muted disabled:opacity-50 text-text-title transition-all cursor-pointer flex items-center justify-center gap-2"
-                      >
-                        {isOcrRunning ? (
-                          <>
-                            <span className="w-3.5 h-3.5 border-2 border-text-title border-t-transparent rounded-full animate-spin"></span>
-                            Extracting details...
-                          </>
-                        ) : (
-                          'Run Local OCR Text Scan'
-                        )}
-                      </button>
+                      {imagePreview === 'pdf' ? (
+                        <div className="bg-input-bg border border-input-border p-3 rounded-lg text-center">
+                          <span className="text-xs font-semibold text-text-title block">Text Indexing</span>
+                          <span className="text-[10px] text-text-muted block mt-1">PDF format detected. The server will extract and index the document text when you click save.</span>
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={runOcr}
+                          disabled={isOcrRunning}
+                          className="w-full py-2.5 rounded-lg text-xs font-semibold bg-input-bg border border-border-main hover:border-text-muted disabled:opacity-50 text-text-title transition-all cursor-pointer flex items-center justify-center gap-2"
+                        >
+                          {isOcrRunning ? (
+                            <>
+                              <span className="w-3.5 h-3.5 border-2 border-text-title border-t-transparent rounded-full animate-spin"></span>
+                              Extracting details...
+                            </>
+                          ) : (
+                            'Run Local OCR Text Scan'
+                          )}
+                        </button>
+                      )}
 
                       {ocrStatus && (
                         <div className="space-y-1.5">
@@ -400,7 +432,7 @@ export default function DocumentsPage() {
 
                       {ocrText && (
                         <div>
-                          <label className="text-[10px] font-bold text-text-muted block mb-1 uppercase tracking-wider">Refine OCR Text</label>
+                          <label className="text-[10px] font-bold text-text-muted block mb-1 uppercase tracking-wider">Refine Extracted Text</label>
                           <textarea
                             value={ocrText}
                             onChange={(e) => setOcrText(e.target.value)}
