@@ -101,30 +101,30 @@ export default function SettingsPage() {
     <div className="p-8 max-w-4xl mx-auto w-full space-y-8 animate-fade-in">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-white to-[#a1a1aa] bg-clip-text text-transparent">
+        <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-text-title to-text-muted bg-clip-text text-transparent">
           Settings
         </h1>
-        <p className="text-sm text-[#a1a1aa] mt-1">
+        <p className="text-sm text-text-muted mt-1">
           Configure API keys, manage local databases, and check engine health.
         </p>
       </div>
 
       {/* System Health Panel */}
       <div className="glass-panel p-6 rounded-2xl space-y-4">
-        <h2 className="text-lg font-semibold text-white">System Engine Status</h2>
+        <h2 className="text-lg font-semibold text-text-title">System Engine Status</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-          <div className="bg-[#18181b] border border-[#27272a] p-4 rounded-xl flex items-center justify-between">
+          <div className="bg-input-bg border border-input-border p-4 rounded-xl flex items-center justify-between">
             <div>
-              <span className="text-[#a1a1aa] text-xs block mb-1">Local Database</span>
-              <span className="font-semibold text-white">{dbStatus}</span>
+              <span className="text-text-muted text-xs block mb-1">Local Database</span>
+              <span className="font-semibold text-text-title">{dbStatus}</span>
             </div>
             <span className={`w-2.5 h-2.5 rounded-full ${dbStatus.includes('Connected') ? 'bg-emerald-400' : 'bg-red-400 animate-pulse'}`}></span>
           </div>
 
-          <div className="bg-[#18181b] border border-[#27272a] p-4 rounded-xl flex items-center justify-between">
+          <div className="bg-input-bg border border-input-border p-4 rounded-xl flex items-center justify-between">
             <div>
-              <span className="text-[#a1a1aa] text-xs block mb-1">AI Semantic Memory</span>
-              <span className="font-semibold text-white">{aiStatus}</span>
+              <span className="text-text-muted text-xs block mb-1">AI Semantic Memory</span>
+              <span className="font-semibold text-text-title">{aiStatus}</span>
             </div>
             <span className={`w-2.5 h-2.5 rounded-full ${aiStatus.includes('Using custom key') ? 'bg-emerald-400' : 'bg-yellow-400'}`}></span>
           </div>
@@ -133,25 +133,25 @@ export default function SettingsPage() {
 
       {/* API Key Panel */}
       <div className="glass-panel p-6 rounded-2xl space-y-4">
-        <h2 className="text-lg font-semibold text-white">AI Engine Configuration</h2>
-        <p className="text-xs text-[#a1a1aa]">
+        <h2 className="text-lg font-semibold text-text-title">AI Engine Configuration</h2>
+        <p className="text-xs text-text-muted">
           Input your Gemini API key below to enable local semantic embeddings, OCR parsing, and conversational assistant features.
         </p>
         <form onSubmit={handleSaveKey} className="space-y-4">
           <div>
-            <label className="text-xs font-semibold text-[#a1a1aa] block mb-1.5">Gemini API Key</label>
+            <label className="text-xs font-semibold text-text-muted block mb-1.5">Gemini API Key</label>
             <div className="relative">
               <input
                 type={showKey ? 'text' : 'password'}
                 value={geminiKey}
                 onChange={(e) => setGeminiKey(e.target.value)}
                 placeholder="Enter Gemini API key (AIzaSy...)"
-                className="w-full bg-[#18181b] border border-[#27272a] rounded-lg p-2.5 pr-10 text-sm text-white focus:outline-none focus:border-[#8b5cf6] font-mono"
+                className="w-full bg-input-bg border border-input-border rounded-lg p-2.5 pr-10 text-sm text-text-title focus:outline-none focus:border-[#8b5cf6] font-mono"
               />
               <button
                 type="button"
                 onClick={() => setShowKey(!showKey)}
-                className="absolute right-3 top-3 text-[#a1a1aa] hover:text-white transition-colors"
+                className="absolute right-3 top-3 text-text-muted hover:text-text-title transition-colors"
               >
                 {showKey ? (
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -179,7 +179,7 @@ export default function SettingsPage() {
       {/* Danger Zone Panel */}
       <div className="glass-panel p-6 rounded-2xl border-red-500/20 space-y-4">
         <h2 className="text-lg font-semibold text-red-400">Danger Zone</h2>
-        <p className="text-xs text-[#a1a1aa]">
+        <p className="text-xs text-text-muted">
           Perform database maintenance. This operation cannot be undone. Make sure you have backed up any critical passenger details.
         </p>
         <button

@@ -59,17 +59,17 @@ export default function SearchPage() {
   return (
     <div className="flex-1 flex flex-col h-full overflow-hidden p-8 max-w-4xl mx-auto w-full relative z-10">
       {/* Header */}
-      <div className="mb-6 flex flex-col gap-1 border-b border-white/[0.04] pb-6">
-        <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-white to-[#a1a1aa] bg-clip-text text-transparent">
+      <div className="mb-6 flex flex-col gap-1 border-b border-border-main pb-6">
+        <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-text-title to-text-muted bg-clip-text text-transparent">
           AI Travel Assistant
         </h1>
-        <p className="text-xs text-[#a1a1aa]">
+        <p className="text-xs text-text-muted">
           Search passenger database and document OCR indices locally in natural language.
         </p>
       </div>
 
       {/* Chat Area */}
-      <div className="flex-1 glass-panel rounded-2xl p-6 flex flex-col justify-between overflow-hidden mb-6 border border-white/[0.04]">
+      <div className="flex-1 glass-panel rounded-2xl p-6 flex flex-col justify-between overflow-hidden mb-6 border border-border-main">
         
         {/* Messages */}
         <div className="flex-1 overflow-y-auto space-y-5 pr-2 scroll-smooth">
@@ -81,7 +81,7 @@ export default function SearchPage() {
               {/* Avatar */}
               <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 font-bold text-xs ${
                 m.role === 'user'
-                  ? 'bg-zinc-800 border border-white/[0.06] text-white'
+                  ? 'bg-input-bg border border-input-border text-text-title'
                   : 'bg-[#8b5cf6]/10 border border-[#8b5cf6]/20 text-[#8b5cf6]'
               }`}>
                 {m.role === 'user' ? (
@@ -97,8 +97,8 @@ export default function SearchPage() {
               <div
                 className={`max-w-[75%] rounded-xl px-4 py-2.5 text-xs leading-relaxed border ${
                   m.role === 'user'
-                    ? 'bg-gradient-to-r from-[#8b5cf6]/20 to-[#3b82f6]/20 border-[#8b5cf6]/25 text-white'
-                    : 'bg-white/[0.02] border-white/[0.04] text-zinc-300'
+                    ? 'bg-gradient-to-r from-[#8b5cf6]/20 to-[#3b82f6]/20 border-[#8b5cf6]/25 text-text-title'
+                    : 'bg-white/[0.02] dark:bg-white/[0.02] light:bg-black/[0.02] border-border-main text-app-fg'
                 }`}
               >
                 <div className="whitespace-pre-wrap">{m.content}</div>
@@ -114,7 +114,7 @@ export default function SearchPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 21m0 0l-.813-5.096m.813 5.096a11.963 11.963 0 01-2.912-1.928m0 0l-1.352-4.361m1.352 4.361a11.954 11.954 0 01-3.427-3.79M3.77 12.048l1.353-4.36m-1.353 4.36a11.948 11.948 0 01-1.927-2.912L5.474 4m0 0A12.07 12.07 0 018 2.052M8 2.052V7m0-4.948a12.07 12.07 0 013.784 1.76l2.122 5.03m-2.122-5.03c.53.224 1.043.484 1.537.777m0 0l4.36-1.353M17.3 3.77a11.948 11.948 0 012.912 1.927m0 0l1.352 4.361m-1.352-4.361a11.954 11.954 0 013.427 3.79M20.23 11.952l-1.353 4.36m1.353-4.36a11.948 11.948 0 011.927 2.912L18.526 20m0 0a12.07 12.07 0 01-2.526 1.948M16 21v-4.948a12.07 12.07 0 01-3.784-1.76l-2.122-5.03m2.122 5.03c-.53-.224-1.043-.484-1.537-.777m0 0L4.829 14.86" />
                 </svg>
               </div>
-              <div className="bg-white/[0.02] border border-white/[0.04] rounded-xl px-4 py-2.5 text-xs text-zinc-400">
+              <div className="bg-white/[0.02] dark:bg-white/[0.02] light:bg-black/[0.02] border border-border-main rounded-xl px-4 py-2.5 text-xs text-text-muted">
                 <div className="flex gap-1.5 items-center">
                   <span className="w-1.5 h-1.5 bg-[#8b5cf6] rounded-full animate-bounce"></span>
                   <span className="w-1.5 h-1.5 bg-[#8b5cf6] rounded-full animate-bounce [animation-delay:0.2s]"></span>
@@ -127,16 +127,16 @@ export default function SearchPage() {
         </div>
 
         {/* Input area */}
-        <div className="mt-4 pt-4 border-t border-white/[0.04]">
+        <div className="mt-4 pt-4 border-t border-border-main">
           {messages.length === 1 && (
             <div className="mb-4">
-              <span className="text-[9px] text-zinc-500 font-bold block mb-2 uppercase tracking-widest">Suggestions</span>
+              <span className="text-[9px] text-text-muted font-bold block mb-2 uppercase tracking-widest">Suggestions</span>
               <div className="flex flex-wrap gap-2">
                 {suggestions.map((s, idx) => (
                   <button
                     key={idx}
                     onClick={() => handleSearch(s)}
-                    className="text-[10px] px-3 py-1.5 rounded-lg border border-white/[0.04] bg-white/[0.01] hover:bg-white/[0.04] text-zinc-400 hover:text-white transition-all cursor-pointer font-medium"
+                    className="text-[10px] px-3 py-1.5 rounded-lg border border-border-main bg-white/[0.01] dark:bg-white/[0.01] light:bg-black/[0.01] hover:bg-white/[0.04] dark:hover:bg-white/[0.04] light:hover:bg-black/[0.02] text-text-muted hover:text-text-title transition-all cursor-pointer font-medium"
                   >
                     {s}
                   </button>
@@ -154,7 +154,7 @@ export default function SearchPage() {
               onKeyDown={(e) => {
                 if (e.key === 'Enter') handleSearch(query);
               }}
-              className="flex-1 bg-[#121216] border border-white/[0.06] rounded-xl px-4 py-3 text-xs text-white placeholder-zinc-600 outline-none focus:border-[#8b5cf6] transition-colors font-medium"
+              className="flex-1 bg-input-bg border border-input-border rounded-xl px-4 py-3 text-xs text-text-title placeholder-text-muted outline-none focus:border-[#8b5cf6] transition-colors font-medium"
             />
             <button
               onClick={() => handleSearch(query)}

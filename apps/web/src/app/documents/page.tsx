@@ -157,7 +157,6 @@ export default function DocumentsPage() {
     }
   };
 
-  // Change parameter type to string since all IDs are string UUIDs in SQLite schema
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this document?')) return;
     try {
@@ -175,12 +174,12 @@ export default function DocumentsPage() {
   return (
     <div className="p-8 max-w-6xl mx-auto w-full space-y-8 animate-fade-in relative z-10">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/[0.04] pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border-main pb-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-white to-[#a1a1aa] bg-clip-text text-transparent">
+          <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-text-title to-text-muted bg-clip-text text-transparent">
             Travel Documents
           </h1>
-          <p className="text-xs text-[#a1a1aa] mt-1">
+          <p className="text-xs text-text-muted mt-1">
             Store passports and Visas. Use browser-side OCR scanning to index details securely.
           </p>
         </div>
@@ -203,9 +202,9 @@ export default function DocumentsPage() {
 
       {/* Grid of Documents */}
       {isLoading ? (
-        <div className="text-center py-20 text-zinc-500 text-xs">Loading document store...</div>
+        <div className="text-center py-20 text-text-muted text-xs">Loading document store...</div>
       ) : documents.length === 0 ? (
-        <div className="glass-panel rounded-2xl py-20 text-center text-zinc-500 text-xs border border-white/[0.04]">
+        <div className="glass-panel rounded-2xl py-20 text-center text-text-muted text-xs border border-border-main">
           No documents scanned. Upload passport images or files to get started.
         </div>
       ) : (
@@ -213,23 +212,23 @@ export default function DocumentsPage() {
           {documents.map((d) => {
             const owner = passengers.find((p) => p.id === d.passengerId);
             return (
-              <div key={d.id} className="glass-panel p-5 rounded-2xl flex flex-col justify-between hover:shadow-lg transition-all group border border-white/[0.04]">
+              <div key={d.id} className="glass-panel p-5 rounded-2xl flex flex-col justify-between hover:shadow-lg transition-all group border border-border-main">
                 <div>
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex items-center gap-3">
-                      <span className="p-2 rounded-lg bg-zinc-900 border border-white/[0.04] text-zinc-400">
+                      <span className="p-2 rounded-lg bg-input-bg border border-border-main text-text-muted">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
                       </span>
                       <div>
-                        <h3 className="font-bold text-xs text-white group-hover:text-[#8b5cf6] transition-colors">{d.name}</h3>
-                        <span className="text-[10px] text-zinc-500 block mt-0.5">{d.type}</span>
+                        <h3 className="font-bold text-xs text-text-title group-hover:text-[#8b5cf6] transition-colors">{d.name}</h3>
+                        <span className="text-[10px] text-text-muted block mt-0.5">{d.type}</span>
                       </div>
                     </div>
                     <button
                       onClick={() => handleDelete(d.id)}
-                      className="p-1.5 rounded-lg bg-white/[0.03] border border-white/[0.05] text-zinc-500 hover:text-rose-400 hover:bg-rose-500/10 transition-all cursor-pointer"
+                      className="p-1.5 rounded-lg bg-white/[0.03] dark:bg-white/[0.03] light:bg-black/[0.03] border border-border-main text-text-muted hover:text-rose-400 hover:bg-rose-500/10 transition-all cursor-pointer"
                       title="Delete Document"
                     >
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -238,15 +237,15 @@ export default function DocumentsPage() {
                     </button>
                   </div>
 
-                  <div className="space-y-3 text-[11px] border-t border-white/[0.04] pt-4">
+                  <div className="space-y-3 text-[11px] border-t border-border-main pt-4">
                     <div>
-                      <span className="text-zinc-500 block mb-0.5 text-[9px] uppercase font-bold tracking-wider">Linked Passenger</span>
-                      <span className="font-semibold text-[#e4e4e7]">{owner ? owner.name : 'Unknown Passenger'}</span>
+                      <span className="text-text-muted block mb-0.5 text-[9px] uppercase font-bold tracking-wider">Linked Passenger</span>
+                      <span className="font-semibold text-text-title">{owner ? owner.name : 'Unknown Passenger'}</span>
                     </div>
                     {d.ocrText && (
                       <div>
-                        <span className="text-zinc-500 block mb-0.5 text-[9px] uppercase font-bold tracking-wider">Extracted OCR Text</span>
-                        <div className="bg-[#121216] p-3 rounded-lg border border-white/[0.05] font-mono text-[9px] text-zinc-400 max-h-24 overflow-y-auto whitespace-pre-wrap">
+                        <span className="text-text-muted block mb-0.5 text-[9px] uppercase font-bold tracking-wider">Extracted OCR Text</span>
+                        <div className="bg-input-bg p-3 rounded-lg border border-input-border font-mono text-[9px] text-text-muted max-h-24 overflow-y-auto whitespace-pre-wrap">
                           {d.ocrText}
                         </div>
                       </div>
@@ -254,7 +253,7 @@ export default function DocumentsPage() {
                   </div>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-white/[0.04] text-[9px] text-zinc-500 flex justify-between items-center">
+                <div className="mt-4 pt-3 border-t border-border-main text-[9px] text-text-muted flex justify-between items-center">
                   <span>Scanned {new Date(d.createdAt).toLocaleDateString()}</span>
                   <span className="text-emerald-400 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded">Indexed</span>
                 </div>
@@ -267,11 +266,11 @@ export default function DocumentsPage() {
       {/* Modal Dialog */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-          <div className="glass-panel w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh] border border-white/[0.08]">
-            <div className="p-5 border-b border-white/[0.06] flex justify-between items-center bg-[#09090b]">
+          <div className="glass-panel w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh] border border-border-main">
+            <div className="p-5 border-b border-border-main flex justify-between items-center bg-sidebar-bg">
               <div>
-                <h2 className="text-base font-bold text-white">Index New Travel Document</h2>
-                <span className="text-[10px] text-zinc-500 block mt-0.5">Link a passport/ID image and run local browser Tesseract OCR</span>
+                <h2 className="text-base font-bold text-text-title">Index New Travel Document</h2>
+                <span className="text-[10px] text-text-muted block mt-0.5">Link a passport/ID image and run local browser Tesseract OCR</span>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
@@ -283,29 +282,29 @@ export default function DocumentsPage() {
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-6 flex-1 bg-[#09090b]">
+            <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-6 flex-1 bg-sidebar-bg">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Form fields */}
                 <div className="space-y-4">
                   <div>
-                    <label className="text-[10px] font-bold text-zinc-400 block mb-1 uppercase tracking-wider">Document Name *</label>
+                    <label className="text-[10px] font-bold text-text-muted block mb-1 uppercase tracking-wider">Document Name *</label>
                     <input
                       type="text"
                       required
                       value={docName}
                       onChange={(e) => setDocName(e.target.value)}
-                      className="w-full bg-[#121216] border border-white/[0.06] rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-[#8b5cf6] placeholder-zinc-600 font-medium"
+                      className="w-full bg-input-bg border border-input-border rounded-lg p-2.5 text-xs text-text-title focus:outline-none focus:border-[#8b5cf6] placeholder-text-muted font-medium"
                       placeholder="E.g. Passport - Prakhar"
                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-[10px] font-bold text-zinc-400 block mb-1 uppercase tracking-wider">Doc Type *</label>
+                      <label className="text-[10px] font-bold text-text-muted block mb-1 uppercase tracking-wider">Doc Type *</label>
                       <select
                         value={docType}
                         onChange={(e) => setDocType(e.target.value)}
-                        className="w-full bg-[#121216] border border-white/[0.06] rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-[#8b5cf6] font-medium"
+                        className="w-full bg-input-bg border border-input-border rounded-lg p-2.5 text-xs text-text-title focus:outline-none focus:border-[#8b5cf6] font-medium"
                       >
                         <option value="Passport">Passport</option>
                         <option value="Aadhaar Card">Aadhaar Card</option>
@@ -315,11 +314,11 @@ export default function DocumentsPage() {
                     </div>
 
                     <div>
-                      <label className="text-[10px] font-bold text-zinc-400 block mb-1 uppercase tracking-wider">Link Passenger *</label>
+                      <label className="text-[10px] font-bold text-text-muted block mb-1 uppercase tracking-wider">Link Passenger *</label>
                       <select
                         value={passengerId}
                         onChange={(e) => setPassengerId(e.target.value)}
-                        className="w-full bg-[#121216] border border-white/[0.06] rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-[#8b5cf6] font-medium"
+                        className="w-full bg-input-bg border border-input-border rounded-lg p-2.5 text-xs text-text-title focus:outline-none focus:border-[#8b5cf6] font-medium"
                       >
                         {passengers.map((p) => (
                           <option key={p.id} value={p.id}>{p.name}</option>
@@ -329,7 +328,7 @@ export default function DocumentsPage() {
                   </div>
 
                   <div>
-                    <label className="text-[10px] font-bold text-zinc-400 block mb-2 uppercase tracking-wider">Upload / Scan Target</label>
+                    <label className="text-[10px] font-bold text-text-muted block mb-2 uppercase tracking-wider">Upload / Scan Target</label>
                     <div
                       onDragOver={handleDragOver}
                       onDragLeave={handleDragLeave}
@@ -338,16 +337,16 @@ export default function DocumentsPage() {
                       className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all ${
                         isDragging
                           ? 'border-[#8b5cf6] bg-[#8b5cf6]/5'
-                          : 'border-white/[0.06] hover:border-[#8b5cf6] bg-[#121216]'
+                          : 'border-input-border hover:border-[#8b5cf6] bg-input-bg'
                       }`}
                     >
-                      <svg className="w-8 h-8 text-zinc-500 mx-auto mb-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <svg className="w-8 h-8 text-text-muted mx-auto mb-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                       </svg>
-                      <span className="text-xs text-zinc-400 block font-semibold">
+                      <span className="text-xs text-text-muted block font-semibold">
                         {selectedFile ? selectedFile.name : 'Select or drag document image'}
                       </span>
-                      <span className="text-[9px] text-zinc-600 mt-1 block">Supports PNG, JPG, JPEG</span>
+                      <span className="text-[9px] text-text-muted mt-1 block">Supports PNG, JPG, JPEG</span>
                       <input
                         type="file"
                         ref={fileInputRef}
@@ -361,15 +360,14 @@ export default function DocumentsPage() {
 
                 {/* Preview / OCR details */}
                 <div className="space-y-4">
-                  {/* OCR Scanner Overlay Wrapper */}
-                  <div className="relative border border-white/[0.06] rounded-xl overflow-hidden bg-[#121216] h-48 flex items-center justify-center ocr-scanner-overlay">
+                  <div className="relative border border-input-border rounded-xl overflow-hidden bg-input-bg h-48 flex items-center justify-center ocr-scanner-overlay">
                     {imagePreview ? (
                       <>
                         <img src={imagePreview} alt="Preview" className="max-h-full object-contain" />
                         {isOcrRunning && <div className="ocr-scanner-line"></div>}
                       </>
                     ) : (
-                      <span className="text-xs text-zinc-600">No Document Selected</span>
+                      <span className="text-xs text-text-muted">No Document Selected</span>
                     )}
                   </div>
 
@@ -379,11 +377,11 @@ export default function DocumentsPage() {
                         type="button"
                         onClick={runOcr}
                         disabled={isOcrRunning}
-                        className="w-full py-2.5 rounded-lg text-xs font-semibold bg-zinc-800 hover:bg-zinc-700 disabled:opacity-50 text-white transition-all cursor-pointer flex items-center justify-center gap-2"
+                        className="w-full py-2.5 rounded-lg text-xs font-semibold bg-input-bg border border-border-main hover:border-text-muted disabled:opacity-50 text-text-title transition-all cursor-pointer flex items-center justify-center gap-2"
                       >
                         {isOcrRunning ? (
                           <>
-                            <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                            <span className="w-3.5 h-3.5 border-2 border-text-title border-t-transparent rounded-full animate-spin"></span>
                             Extracting details...
                           </>
                         ) : (
@@ -393,8 +391,8 @@ export default function DocumentsPage() {
 
                       {ocrStatus && (
                         <div className="space-y-1.5">
-                          <span className="text-[9px] text-zinc-400 block font-bold uppercase tracking-wider">{ocrStatus}</span>
-                          <div className="w-full bg-[#1e1e24] h-1 rounded-full overflow-hidden">
+                          <span className="text-[9px] text-text-muted block font-bold uppercase tracking-wider">{ocrStatus}</span>
+                          <div className="w-full bg-border-main h-1 rounded-full overflow-hidden">
                             <div className="bg-gradient-to-r from-[#8b5cf6] to-[#3b82f6] h-full transition-all duration-300" style={{ width: `${ocrProgress}%` }}></div>
                           </div>
                         </div>
@@ -402,12 +400,12 @@ export default function DocumentsPage() {
 
                       {ocrText && (
                         <div>
-                          <label className="text-[10px] font-bold text-zinc-400 block mb-1 uppercase tracking-wider">Refine OCR Text</label>
+                          <label className="text-[10px] font-bold text-text-muted block mb-1 uppercase tracking-wider">Refine OCR Text</label>
                           <textarea
                             value={ocrText}
                             onChange={(e) => setOcrText(e.target.value)}
                             rows={3}
-                            className="w-full bg-[#121216] border border-white/[0.06] rounded-lg p-2 text-[10px] font-mono text-[#e4e4e7] focus:outline-none focus:border-[#8b5cf6]"
+                            className="w-full bg-input-bg border border-input-border rounded-lg p-2 text-[10px] font-mono text-text-title focus:outline-none focus:border-[#8b5cf6]"
                           />
                         </div>
                       )}
@@ -417,11 +415,11 @@ export default function DocumentsPage() {
               </div>
 
               {/* Footer */}
-              <div className="flex justify-end gap-3 border-t border-white/[0.06] pt-4 bg-[#0c0c10]/50 -mx-6 -mb-6 p-5">
+              <div className="flex justify-end gap-3 border-t border-border-main pt-4 bg-sidebar-bg -mx-6 -mb-6 p-5">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-lg text-xs font-semibold bg-zinc-800 hover:bg-zinc-700 text-white transition-colors cursor-pointer"
+                  className="px-4 py-2 rounded-lg text-xs font-semibold bg-input-bg border border-border-main text-text-title hover:border-text-muted transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>

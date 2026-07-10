@@ -10,7 +10,6 @@ export default function PassengersPage() {
   const [activeFormTab, setActiveFormTab] = useState<'personal' | 'docs' | 'preferences'>('personal');
   const [copiedField, setCopiedField] = useState<{ id: string; type: string } | null>(null);
   
-  // Form State (using string ID since all database primary keys are UUIDs)
   const [currentId, setCurrentId] = useState<string | null>(null);
   const [name, setName] = useState('');
   const [dob, setDob] = useState('');
@@ -144,12 +143,12 @@ export default function PassengersPage() {
   return (
     <div className="p-8 max-w-6xl mx-auto w-full space-y-8 animate-fade-in relative z-10">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/[0.04] pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border-main pb-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-white to-[#a1a1aa] bg-clip-text text-transparent">
+          <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-text-title to-text-muted bg-clip-text text-transparent">
             Passenger Profiles
           </h1>
-          <p className="text-xs text-[#a1a1aa] mt-1">
+          <p className="text-xs text-text-muted mt-1">
             Store and manage secure traveler data on your system for high-speed autocomplete.
           </p>
         </div>
@@ -165,8 +164,8 @@ export default function PassengersPage() {
       </div>
 
       {/* Search Bar */}
-      <div className="glass-panel rounded-xl p-2.5 flex items-center gap-3 border border-white/[0.04] bg-white/[0.01]">
-        <svg className="w-4 h-4 text-[#a1a1aa] ml-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+      <div className="glass-panel rounded-xl p-2.5 flex items-center gap-3 border border-border-main bg-white/[0.01] dark:bg-white/[0.01] light:bg-black/[0.01]">
+        <svg className="w-4 h-4 text-text-muted ml-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
         <input
@@ -174,15 +173,15 @@ export default function PassengersPage() {
           placeholder="Search passengers by name or passport..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="bg-transparent border-none text-white placeholder-zinc-500 outline-none text-xs w-full"
+          className="bg-transparent border-none text-text-title placeholder-text-muted outline-none text-xs w-full"
         />
       </div>
 
       {/* Grid of passengers */}
       {isLoading ? (
-        <div className="text-center py-20 text-zinc-500 text-xs">Loading traveler database...</div>
+        <div className="text-center py-20 text-text-muted text-xs">Loading traveler database...</div>
       ) : filteredPassengers.length === 0 ? (
-        <div className="glass-panel rounded-2xl py-20 text-center text-zinc-500 text-xs border border-white/[0.04]">
+        <div className="glass-panel rounded-2xl py-20 text-center text-text-muted text-xs border border-border-main">
           No passengers found. Click "Add Passenger" to create your first profile.
         </div>
       ) : (
@@ -191,14 +190,14 @@ export default function PassengersPage() {
             <div key={p.id} className="boarding-pass-card p-6 flex flex-col justify-between group">
               <div>
                 {/* Header of Pass */}
-                <div className="flex justify-between items-start border-b border-white/[0.05] pb-4 mb-4">
+                <div className="flex justify-between items-start border-b border-border-main pb-4 mb-4">
                   <div>
                     <span className="text-[9px] text-[#8b5cf6] font-extrabold uppercase tracking-widest">BOARDING ID PASS</span>
-                    <h3 className="text-base font-bold text-white mt-0.5 tracking-tight group-hover:text-[#8b5cf6] transition-colors">{p.name}</h3>
+                    <h3 className="text-base font-bold text-text-title mt-0.5 tracking-tight group-hover:text-[#8b5cf6] transition-colors">{p.name}</h3>
                     <div className="flex items-center gap-2 mt-1">
-                      <span className="text-[10px] text-zinc-400">{p.nationality}</span>
-                      <span className="w-1 h-1 rounded-full bg-zinc-600"></span>
-                      <span className="text-[10px] text-zinc-400">{p.gender}</span>
+                      <span className="text-[10px] text-text-muted">{p.nationality}</span>
+                      <span className="w-1 h-1 rounded-full bg-border-main"></span>
+                      <span className="text-[10px] text-text-muted">{p.gender}</span>
                     </div>
                   </div>
                   
@@ -206,7 +205,7 @@ export default function PassengersPage() {
                   <div className="flex gap-1">
                     <button
                       onClick={() => openEditModal(p)}
-                      className="p-2 rounded-lg bg-white/[0.03] border border-white/[0.05] text-zinc-400 hover:text-white hover:bg-white/[0.08] transition-all cursor-pointer"
+                      className="p-2 rounded-lg bg-white/[0.03] dark:bg-white/[0.03] light:bg-black/[0.03] border border-border-main text-text-muted hover:text-text-title hover:bg-white/[0.08] dark:hover:bg-white/[0.08] light:hover:bg-black/[0.08] transition-all cursor-pointer"
                       title="Edit Profile"
                     >
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -215,7 +214,7 @@ export default function PassengersPage() {
                     </button>
                     <button
                       onClick={() => handleDelete(p.id)}
-                      className="p-2 rounded-lg bg-white/[0.03] border border-white/[0.05] text-rose-400 hover:bg-rose-500/10 transition-all cursor-pointer"
+                      className="p-2 rounded-lg bg-white/[0.03] dark:bg-white/[0.03] light:bg-black/[0.03] border border-border-main text-rose-400 hover:bg-rose-500/10 transition-all cursor-pointer"
                       title="Delete Profile"
                     >
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -228,22 +227,22 @@ export default function PassengersPage() {
                 {/* Grid data */}
                 <div className="grid grid-cols-2 gap-y-4 gap-x-4 text-[11px] pb-4">
                   <div>
-                    <span className="text-zinc-500 block mb-0.5 text-[9px] uppercase font-bold tracking-wider">Date of Birth</span>
-                    <span className="font-semibold text-[#e4e4e7]">{p.dob ? new Date(p.dob).toLocaleDateString(undefined, { dateStyle: 'medium' }) : 'N/A'}</span>
+                    <span className="text-text-muted block mb-0.5 text-[9px] uppercase font-bold tracking-wider">Date of Birth</span>
+                    <span className="font-semibold text-text-title">{p.dob ? new Date(p.dob).toLocaleDateString(undefined, { dateStyle: 'medium' }) : 'N/A'}</span>
                   </div>
 
                   <div>
-                    <span className="text-zinc-500 block mb-0.5 text-[9px] uppercase font-bold tracking-wider">Mobile Phone</span>
-                    <span className="font-semibold text-[#e4e4e7]">{p.mobile || 'N/A'}</span>
+                    <span className="text-text-muted block mb-0.5 text-[9px] uppercase font-bold tracking-wider">Mobile Phone</span>
+                    <span className="font-semibold text-text-title">{p.mobile || 'N/A'}</span>
                   </div>
 
                   {/* Copyable Credentials */}
                   <div className="relative">
-                    <span className="text-zinc-500 block mb-0.5 text-[9px] uppercase font-bold tracking-wider">Aadhaar Card</span>
+                    <span className="text-text-muted block mb-0.5 text-[9px] uppercase font-bold tracking-wider">Aadhaar Card</span>
                     <button
                       onClick={() => copyToClipboard(p.aadhaar, p.id, 'aadhaar')}
                       disabled={!p.aadhaar}
-                      className="font-mono text-zinc-300 font-medium hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer text-left w-full"
+                      className="font-mono text-app-fg font-medium hover:text-text-title flex items-center gap-1.5 transition-colors cursor-pointer text-left w-full"
                     >
                       {p.aadhaar ? (
                         <>
@@ -253,17 +252,17 @@ export default function PassengersPage() {
                           </span>
                         </>
                       ) : (
-                        <span className="text-zinc-600">Not Provided</span>
+                        <span className="text-text-muted">Not Provided</span>
                       )}
                     </button>
                   </div>
 
                   <div className="relative">
-                    <span className="text-zinc-500 block mb-0.5 text-[9px] uppercase font-bold tracking-wider">Passport</span>
+                    <span className="text-text-muted block mb-0.5 text-[9px] uppercase font-bold tracking-wider">Passport</span>
                     <button
                       onClick={() => copyToClipboard(p.passport, p.id, 'passport')}
                       disabled={!p.passport}
-                      className="font-mono text-zinc-300 font-medium hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer text-left w-full"
+                      className="font-mono text-app-fg font-medium hover:text-text-title flex items-center gap-1.5 transition-colors cursor-pointer text-left w-full"
                     >
                       {p.passport ? (
                         <>
@@ -273,18 +272,18 @@ export default function PassengersPage() {
                           </span>
                         </>
                       ) : (
-                        <span className="text-zinc-600">Not Provided</span>
+                        <span className="text-text-muted">Not Provided</span>
                       )}
                     </button>
                   </div>
                 </div>
 
                 {/* Footer Section resembling ticket details */}
-                <div className="border-t border-dashed border-white/[0.08] pt-4 mt-2 flex items-center justify-between">
+                <div className="border-t border-dashed border-border-main pt-4 mt-2 flex items-center justify-between">
                   <div className="flex gap-4">
                     <div>
-                      <span className="text-zinc-600 block text-[8px] uppercase font-bold tracking-wider">Berth Pref</span>
-                      <span className="text-white font-bold font-mono text-[10px]">
+                      <span className="text-text-muted block text-[8px] uppercase font-bold tracking-wider">Berth Pref</span>
+                      <span className="text-text-title font-bold font-mono text-[10px]">
                         {p.preferredBerth === 'LB' && 'LOWER (LB)'}
                         {p.preferredBerth === 'MB' && 'MIDDLE (MB)'}
                         {p.preferredBerth === 'UB' && 'UPPER (UB)'}
@@ -294,8 +293,8 @@ export default function PassengersPage() {
                       </span>
                     </div>
                     <div>
-                      <span className="text-zinc-600 block text-[8px] uppercase font-bold tracking-wider">Meal Pref</span>
-                      <span className="text-white font-bold font-mono text-[10px] uppercase">
+                      <span className="text-text-muted block text-[8px] uppercase font-bold tracking-wider">Meal Pref</span>
+                      <span className="text-text-title font-bold font-mono text-[10px] uppercase">
                         {p.mealPreference || 'NONE'}
                       </span>
                     </div>
@@ -304,32 +303,32 @@ export default function PassengersPage() {
                   {/* Micro chip & flight SVG */}
                   <div className="flex items-center gap-3">
                     <div className="sim-chip"></div>
-                    <svg className="w-5 h-5 text-zinc-700 transform rotate-45" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-text-muted transform rotate-45" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L6 12zm0 0h7.5" />
                     </svg>
                   </div>
                 </div>
 
                 {/* Mock Barcode */}
-                <div className="flex gap-0.5 h-5 opacity-20 mt-4 overflow-hidden rounded">
-                  <div className="w-1 bg-white h-full"></div>
-                  <div className="w-2 bg-white h-full"></div>
-                  <div className="w-0.5 bg-white h-full"></div>
-                  <div className="w-1.5 bg-white h-full"></div>
-                  <div className="w-1 bg-white h-full"></div>
-                  <div className="w-3 bg-white h-full"></div>
-                  <div className="w-0.5 bg-white h-full"></div>
-                  <div className="w-2 bg-white h-full"></div>
-                  <div className="w-1.5 bg-white h-full"></div>
-                  <div className="w-1 bg-white h-full"></div>
-                  <div className="w-2 bg-white h-full"></div>
-                  <div className="w-0.5 bg-white h-full"></div>
-                  <div className="w-3 bg-white h-full"></div>
-                  <div className="w-1 bg-white h-full"></div>
-                  <div className="w-1.5 bg-white h-full"></div>
-                  <div className="w-1 bg-white h-full"></div>
-                  <div className="w-0.5 bg-white h-full"></div>
-                  <div className="w-2.5 bg-white h-full"></div>
+                <div className="flex gap-0.5 h-5 opacity-20 dark:opacity-20 light:opacity-45 mt-4 overflow-hidden rounded">
+                  <div className="w-1 bg-text-title h-full"></div>
+                  <div className="w-2 bg-text-title h-full"></div>
+                  <div className="w-0.5 bg-text-title h-full"></div>
+                  <div className="w-1.5 bg-text-title h-full"></div>
+                  <div className="w-1 bg-text-title h-full"></div>
+                  <div className="w-3 bg-text-title h-full"></div>
+                  <div className="w-0.5 bg-text-title h-full"></div>
+                  <div className="w-2 bg-text-title h-full"></div>
+                  <div className="w-1.5 bg-text-title h-full"></div>
+                  <div className="w-1 bg-text-title h-full"></div>
+                  <div className="w-2 bg-text-title h-full"></div>
+                  <div className="w-0.5 bg-text-title h-full"></div>
+                  <div className="w-3 bg-text-title h-full"></div>
+                  <div className="w-1 bg-text-title h-full"></div>
+                  <div className="w-1.5 bg-text-title h-full"></div>
+                  <div className="w-1 bg-text-title h-full"></div>
+                  <div className="w-0.5 bg-text-title h-full"></div>
+                  <div className="w-2.5 bg-text-title h-full"></div>
                 </div>
 
               </div>
@@ -341,16 +340,16 @@ export default function PassengersPage() {
       {/* Modal Dialog */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-          <div className="glass-panel w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh] border border-white/[0.08]">
+          <div className="glass-panel w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh] border border-border-main">
             {/* Modal Header */}
-            <div className="p-5 border-b border-white/[0.06] flex justify-between items-center bg-[#09090b]">
+            <div className="p-5 border-b border-border-main flex justify-between items-center bg-sidebar-bg">
               <div>
-                <h2 className="text-base font-bold text-white">{currentId ? 'Edit Passenger Details' : 'Register New Passenger'}</h2>
-                <span className="text-[10px] text-zinc-500 block mt-0.5">Fill passenger parameters for vector mapping</span>
+                <h2 className="text-base font-bold text-text-title">{currentId ? 'Edit Passenger Details' : 'Register New Passenger'}</h2>
+                <span className="text-[10px] text-text-muted block mt-0.5">Fill passenger parameters for vector mapping</span>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="text-[#a1a1aa] hover:text-white transition-colors cursor-pointer"
+                className="text-text-muted hover:text-text-title transition-colors cursor-pointer"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -359,14 +358,14 @@ export default function PassengersPage() {
             </div>
 
             {/* Sub-Header Tabs */}
-            <div className="flex border-b border-white/[0.04] bg-[#0c0c10] px-5 py-1 gap-1">
+            <div className="flex border-b border-border-main bg-input-bg px-5 py-1 gap-1">
               <button
                 type="button"
                 onClick={() => setActiveFormTab('personal')}
                 className={`px-3 py-2 text-[11px] font-semibold transition-all border-b-2 cursor-pointer ${
                   activeFormTab === 'personal'
-                    ? 'text-white border-[#8b5cf6]'
-                    : 'text-zinc-500 border-transparent hover:text-zinc-300'
+                    ? 'text-text-title border-[#8b5cf6]'
+                    : 'text-text-muted border-transparent hover:text-text-title'
                 }`}
               >
                 1. Identity & Contact
@@ -376,8 +375,8 @@ export default function PassengersPage() {
                 onClick={() => setActiveFormTab('docs')}
                 className={`px-3 py-2 text-[11px] font-semibold transition-all border-b-2 cursor-pointer ${
                   activeFormTab === 'docs'
-                    ? 'text-white border-[#8b5cf6]'
-                    : 'text-zinc-500 border-transparent hover:text-zinc-300'
+                    ? 'text-text-title border-[#8b5cf6]'
+                    : 'text-text-muted border-transparent hover:text-text-title'
                 }`}
               >
                 2. Credentials & IDs
@@ -387,8 +386,8 @@ export default function PassengersPage() {
                 onClick={() => setActiveFormTab('preferences')}
                 className={`px-3 py-2 text-[11px] font-semibold transition-all border-b-2 cursor-pointer ${
                   activeFormTab === 'preferences'
-                    ? 'text-white border-[#8b5cf6]'
-                    : 'text-zinc-500 border-transparent hover:text-zinc-300'
+                    ? 'text-text-title border-[#8b5cf6]'
+                    : 'text-text-muted border-transparent hover:text-text-title'
                 }`}
               >
                 3. Preferences
@@ -396,41 +395,41 @@ export default function PassengersPage() {
             </div>
 
             {/* Modal Form body */}
-            <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-4 flex-1 bg-[#09090b]">
+            <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-4 flex-1 bg-sidebar-bg">
               
               {/* Tab 1: Personal info */}
               {activeFormTab === 'personal' && (
                 <div className="space-y-4 animate-fade-in">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-[10px] font-bold text-zinc-400 block mb-1 uppercase tracking-wider">Full Name *</label>
+                      <label className="text-[10px] font-bold text-text-muted block mb-1 uppercase tracking-wider">Full Name *</label>
                       <input
                         type="text"
                         required
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        className="w-full bg-[#121216] border border-white/[0.06] rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-[#8b5cf6] placeholder-zinc-600 font-medium"
+                        className="w-full bg-input-bg border border-input-border rounded-lg p-2.5 text-xs text-text-title focus:outline-none focus:border-[#8b5cf6] placeholder-text-muted font-medium"
                         placeholder="E.g. Prakhar Singh"
                       />
                     </div>
 
                     <div>
-                      <label className="text-[10px] font-bold text-zinc-400 block mb-1 uppercase tracking-wider">Date of Birth *</label>
+                      <label className="text-[10px] font-bold text-text-muted block mb-1 uppercase tracking-wider">Date of Birth *</label>
                       <input
                         type="date"
                         required
                         value={dob}
                         onChange={(e) => setDob(e.target.value)}
-                        className="w-full bg-[#121216] border border-white/[0.06] rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-[#8b5cf6] font-medium"
+                        className="w-full bg-input-bg border border-input-border rounded-lg p-2.5 text-xs text-text-title focus:outline-none focus:border-[#8b5cf6] font-medium"
                       />
                     </div>
 
                     <div>
-                      <label className="text-[10px] font-bold text-zinc-400 block mb-1 uppercase tracking-wider">Gender *</label>
+                      <label className="text-[10px] font-bold text-text-muted block mb-1 uppercase tracking-wider">Gender *</label>
                       <select
                         value={gender}
                         onChange={(e) => setGender(e.target.value)}
-                        className="w-full bg-[#121216] border border-white/[0.06] rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-[#8b5cf6] font-medium"
+                        className="w-full bg-input-bg border border-input-border rounded-lg p-2.5 text-xs text-text-title focus:outline-none focus:border-[#8b5cf6] font-medium"
                       >
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
@@ -439,34 +438,34 @@ export default function PassengersPage() {
                     </div>
 
                     <div>
-                      <label className="text-[10px] font-bold text-zinc-400 block mb-1 uppercase tracking-wider">Nationality *</label>
+                      <label className="text-[10px] font-bold text-text-muted block mb-1 uppercase tracking-wider">Nationality *</label>
                       <input
                         type="text"
                         required
                         value={nationality}
                         onChange={(e) => setNationality(e.target.value)}
-                        className="w-full bg-[#121216] border border-white/[0.06] rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-[#8b5cf6] placeholder-zinc-600 font-medium"
+                        className="w-full bg-input-bg border border-input-border rounded-lg p-2.5 text-xs text-text-title focus:outline-none focus:border-[#8b5cf6] placeholder-text-muted font-medium"
                       />
                     </div>
 
                     <div>
-                      <label className="text-[10px] font-bold text-zinc-400 block mb-1 uppercase tracking-wider">Mobile Phone</label>
+                      <label className="text-[10px] font-bold text-text-muted block mb-1 uppercase tracking-wider">Mobile Phone</label>
                       <input
                         type="tel"
                         value={mobile}
                         onChange={(e) => setMobile(e.target.value)}
-                        className="w-full bg-[#121216] border border-white/[0.06] rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-[#8b5cf6] placeholder-zinc-600 font-medium"
+                        className="w-full bg-input-bg border border-input-border rounded-lg p-2.5 text-xs text-text-title focus:outline-none focus:border-[#8b5cf6] placeholder-text-muted font-medium"
                         placeholder="Mobile number"
                       />
                     </div>
 
                     <div>
-                      <label className="text-[10px] font-bold text-zinc-400 block mb-1 uppercase tracking-wider">Email Address</label>
+                      <label className="text-[10px] font-bold text-text-muted block mb-1 uppercase tracking-wider">Email Address</label>
                       <input
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full bg-[#121216] border border-white/[0.06] rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-[#8b5cf6] placeholder-zinc-600 font-medium"
+                        className="w-full bg-input-bg border border-input-border rounded-lg p-2.5 text-xs text-text-title focus:outline-none focus:border-[#8b5cf6] placeholder-text-muted font-medium"
                         placeholder="Email address"
                       />
                     </div>
@@ -476,7 +475,7 @@ export default function PassengersPage() {
                     <button
                       type="button"
                       onClick={() => setActiveFormTab('docs')}
-                      className="px-4 py-2 bg-zinc-800 text-white rounded-lg text-xs font-semibold hover:bg-zinc-700 transition-colors cursor-pointer"
+                      className="px-4 py-2 bg-input-bg border border-border-main text-text-title rounded-lg text-xs font-semibold hover:border-text-muted transition-colors cursor-pointer"
                     >
                       Next: Credentials →
                     </button>
@@ -489,23 +488,23 @@ export default function PassengersPage() {
                 <div className="space-y-4 animate-fade-in">
                   <div className="space-y-4">
                     <div>
-                      <label className="text-[10px] font-bold text-zinc-400 block mb-1 uppercase tracking-wider">Aadhaar Card Number</label>
+                      <label className="text-[10px] font-bold text-text-muted block mb-1 uppercase tracking-wider">Aadhaar Card Number</label>
                       <input
                         type="text"
                         value={aadhaar}
                         onChange={(e) => setAadhaar(e.target.value)}
-                        className="w-full bg-[#121216] border border-white/[0.06] rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-[#8b5cf6] font-mono placeholder-zinc-600"
+                        className="w-full bg-input-bg border border-input-border rounded-lg p-2.5 text-xs text-text-title focus:outline-none focus:border-[#8b5cf6] font-mono placeholder-text-muted"
                         placeholder="12-digit Aadhaar number"
                       />
                     </div>
 
                     <div>
-                      <label className="text-[10px] font-bold text-zinc-400 block mb-1 uppercase tracking-wider">Passport Number</label>
+                      <label className="text-[10px] font-bold text-text-muted block mb-1 uppercase tracking-wider">Passport Number</label>
                       <input
                         type="text"
                         value={passport}
                         onChange={(e) => setPassport(e.target.value)}
-                        className="w-full bg-[#121216] border border-white/[0.06] rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-[#8b5cf6] font-mono placeholder-zinc-600"
+                        className="w-full bg-input-bg border border-input-border rounded-lg p-2.5 text-xs text-text-title focus:outline-none focus:border-[#8b5cf6] font-mono placeholder-text-muted"
                         placeholder="Passport number"
                       />
                     </div>
@@ -515,14 +514,14 @@ export default function PassengersPage() {
                     <button
                       type="button"
                       onClick={() => setActiveFormTab('personal')}
-                      className="px-4 py-2 border border-white/[0.05] hover:bg-white/[0.02] text-zinc-400 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
+                      className="px-4 py-2 border border-border-main hover:bg-white/[0.02] dark:hover:bg-white/[0.02] light:hover:bg-black/[0.02] text-text-muted rounded-lg text-xs font-semibold transition-colors cursor-pointer"
                     >
                       ← Back
                     </button>
                     <button
                       type="button"
                       onClick={() => setActiveFormTab('preferences')}
-                      className="px-4 py-2 bg-zinc-800 text-white rounded-lg text-xs font-semibold hover:bg-zinc-700 transition-colors cursor-pointer"
+                      className="px-4 py-2 bg-input-bg border border-border-main text-text-title rounded-lg text-xs font-semibold hover:border-text-muted transition-colors cursor-pointer"
                     >
                       Next: Preferences →
                     </button>
@@ -535,11 +534,11 @@ export default function PassengersPage() {
                 <div className="space-y-4 animate-fade-in">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-[10px] font-bold text-zinc-400 block mb-1 uppercase tracking-wider">Preferred Berth/Seat</label>
+                      <label className="text-[10px] font-bold text-text-muted block mb-1 uppercase tracking-wider">Preferred Berth/Seat</label>
                       <select
                         value={preferredBerth}
                         onChange={(e) => setPreferredBerth(e.target.value)}
-                        className="w-full bg-[#121216] border border-white/[0.06] rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-[#8b5cf6] font-medium"
+                        className="w-full bg-input-bg border border-input-border rounded-lg p-2.5 text-xs text-text-title focus:outline-none focus:border-[#8b5cf6] font-medium"
                       >
                         <option value="LB">Lower Berth (LB)</option>
                         <option value="MB">Middle Berth (MB)</option>
@@ -550,11 +549,11 @@ export default function PassengersPage() {
                     </div>
 
                     <div>
-                      <label className="text-[10px] font-bold text-zinc-400 block mb-1 uppercase tracking-wider">Meal Preference</label>
+                      <label className="text-[10px] font-bold text-text-muted block mb-1 uppercase tracking-wider">Meal Preference</label>
                       <select
                         value={mealPreference}
                         onChange={(e) => setMealPreference(e.target.value)}
-                        className="w-full bg-[#121216] border border-white/[0.06] rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-[#8b5cf6] font-medium"
+                        className="w-full bg-input-bg border border-input-border rounded-lg p-2.5 text-xs text-text-title focus:outline-none focus:border-[#8b5cf6] font-medium"
                       >
                         <option value="Veg">Vegetarian (Veg)</option>
                         <option value="Non-Veg">Non-Vegetarian</option>
@@ -567,7 +566,7 @@ export default function PassengersPage() {
                     <button
                       type="button"
                       onClick={() => setActiveFormTab('docs')}
-                      className="px-4 py-2 border border-white/[0.05] hover:bg-white/[0.02] text-zinc-400 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
+                      className="px-4 py-2 border border-border-main hover:bg-white/[0.02] dark:hover:bg-white/[0.02] light:hover:bg-black/[0.02] text-text-muted rounded-lg text-xs font-semibold transition-colors cursor-pointer"
                     >
                       ← Back
                     </button>
