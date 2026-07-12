@@ -57,6 +57,13 @@ export async function POST(request: Request) {
       });
     }
 
+    // Map Seat Preference
+    if (rules.fields.seat && p.preferredSeat) {
+      rules.fields.seat.forEach((rule) => {
+        mappedFields.push({ selector: rule.selector, value: p.preferredSeat || '', type: rule.type });
+      });
+    }
+
     // Map Meal Preference
     if (rules.fields.meal && p.mealPreference) {
       rules.fields.meal.forEach((rule) => {

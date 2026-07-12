@@ -8,9 +8,12 @@ export const passengers = sqliteTable('passengers', {
   nationality: text('nationality').notNull().default('Indian'),
   aadhaar: text('aadhaar'),
   passport: text('passport'),
+  passportExpiry: text('passport_expiry'), // Format: YYYY-MM-DD
+  visaExpiry: text('visa_expiry'), // Format: YYYY-MM-DD
   mobile: text('mobile'),
   email: text('email'),
-  preferredBerth: text('preferred_berth'), // 'Lower', 'Middle', 'Upper', 'Side Lower', 'Side Upper', etc.
+  preferredBerth: text('preferred_berth'), // 'LB', 'MB', 'UB', 'SL', 'SU', etc.
+  preferredSeat: text('preferred_seat'), // 'WINDOW', 'AISLE', 'EXIT', 'NONE'
   mealPreference: text('meal_preference'), // 'Veg', 'Non-Veg', 'No Preference'
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()

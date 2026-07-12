@@ -17,9 +17,12 @@ export default function PassengersPage() {
   const [nationality, setNationality] = useState('Indian');
   const [aadhaar, setAadhaar] = useState('');
   const [passport, setPassport] = useState('');
+  const [passportExpiry, setPassportExpiry] = useState('');
+  const [visaExpiry, setVisaExpiry] = useState('');
   const [mobile, setMobile] = useState('');
   const [email, setEmail] = useState('');
-  const [preferredBerth, setPreferredBerth] = useState('LB');
+  const [preferredBerth, setPreferredBerth] = useState('NONE');
+  const [preferredSeat, setPreferredSeat] = useState('NONE');
   const [mealPreference, setMealPreference] = useState('Veg');
 
   useEffect(() => {
@@ -56,9 +59,12 @@ export default function PassengersPage() {
     setNationality('Indian');
     setAadhaar('');
     setPassport('');
+    setPassportExpiry('');
+    setVisaExpiry('');
     setMobile('');
     setEmail('');
-    setPreferredBerth('LB');
+    setPreferredBerth('NONE');
+    setPreferredSeat('NONE');
     setMealPreference('Veg');
     setActiveFormTab('personal');
     setIsModalOpen(true);
@@ -67,15 +73,17 @@ export default function PassengersPage() {
   const openEditModal = (p: any) => {
     setCurrentId(p.id);
     setName(p.name);
-    const formattedDate = p.dob ? new Date(p.dob).toISOString().split('T')[0] : '';
-    setDob(formattedDate);
+    setDob(p.dob ? new Date(p.dob).toISOString().split('T')[0] : '');
     setGender(p.gender || 'Male');
     setNationality(p.nationality || 'Indian');
     setAadhaar(p.aadhaar || '');
     setPassport(p.passport || '');
+    setPassportExpiry(p.passportExpiry ? new Date(p.passportExpiry).toISOString().split('T')[0] : '');
+    setVisaExpiry(p.visaExpiry ? new Date(p.visaExpiry).toISOString().split('T')[0] : '');
     setMobile(p.mobile || '');
     setEmail(p.email || '');
-    setPreferredBerth(p.preferredBerth || 'LB');
+    setPreferredBerth(p.preferredBerth || 'NONE');
+    setPreferredSeat(p.preferredSeat || 'NONE');
     setMealPreference(p.mealPreference || 'Veg');
     setActiveFormTab('personal');
     setIsModalOpen(true);
@@ -102,9 +110,12 @@ export default function PassengersPage() {
           nationality,
           aadhaar: aadhaar || null,
           passport: passport || null,
+          passportExpiry: passportExpiry || null,
+          visaExpiry: visaExpiry || null,
           mobile: mobile || null,
           email: email || null,
           preferredBerth,
+          preferredSeat,
           mealPreference,
         }),
       });
@@ -242,7 +253,7 @@ export default function PassengersPage() {
                     <button
                       onClick={() => copyToClipboard(p.aadhaar, p.id, 'aadhaar')}
                       disabled={!p.aadhaar}
-                      className="font-mono text-app-fg font-medium hover:text-text-title flex items-center gap-1.5 transition-colors cursor-pointer text-left w-full"
+                      className="font-mono text-app-fg font-medium hover:text-text-title flex items-center gap-1.5 transition-colors cursor-pointer text-left w-full text-xs"
                     >
                       {p.aadhaar ? (
                         <>
@@ -262,7 +273,7 @@ export default function PassengersPage() {
                     <button
                       onClick={() => copyToClipboard(p.passport, p.id, 'passport')}
                       disabled={!p.passport}
-                      className="font-mono text-app-fg font-medium hover:text-text-title flex items-center gap-1.5 transition-colors cursor-pointer text-left w-full"
+                      className="font-mono text-app-fg font-medium hover:text-text-title flex items-center gap-1.5 transition-colors cursor-pointer text-left w-full text-xs"
                     >
                       {p.passport ? (
                         <>
@@ -279,19 +290,32 @@ export default function PassengersPage() {
                 </div>
 
                 {/* Footer Section resembling ticket details */}
-                <div className="border-t border-dashed border-border-main pt-4 mt-2 flex items-center justify-between">
-                  <div className="flex gap-4">
+                <div className="border-t border-dashed border-border-main pt-4 mt-2 flex flex-col gap-3">
+                  <div className="grid grid-cols-3 gap-2">
                     <div>
-                      <span className="text-text-muted block text-[8px] uppercase font-bold tracking-wider">Berth Pref</span>
+                      <span className="text-text-muted block text-[8px] uppercase font-bold tracking-wider">Flight Seat</span>
+                      <span className="text-text-title font-bold font-mono text-[10px]">
+                        {p.preferredSeat === 'WINDOW' && 'WINDOW'}
+                        {p.preferredSeat === 'AISLE' && 'AISLE'}
+                        {p.preferredSeat === 'EXIT' && 'EXIT ROW'}
+                        {(!p.preferredSeat || p.preferredSeat === 'NONE') && 'NONE'}
+                        {p.preferredSeat && !['WINDOW', 'AISLE', 'EXIT', 'NONE'].includes(p.preferredSeat) && p.preferredSeat}
+                      </span>
+                    </div>
+                    
+                    <div>
+                      <span className="text-text-muted block text-[8px] uppercase font-bold tracking-wider">Train Berth</span>
                       <span className="text-text-title font-bold font-mono text-[10px]">
                         {p.preferredBerth === 'LB' && 'LOWER (LB)'}
                         {p.preferredBerth === 'MB' && 'MIDDLE (MB)'}
                         {p.preferredBerth === 'UB' && 'UPPER (UB)'}
                         {p.preferredBerth === 'SL' && 'SIDE LOWER (SL)'}
                         {p.preferredBerth === 'SU' && 'SIDE UPPER (SU)'}
-                        {!['LB', 'MB', 'UB', 'SL', 'SU'].includes(p.preferredBerth) && (p.preferredBerth || 'NONE')}
+                        {(!p.preferredBerth || p.preferredBerth === 'NONE') && 'NONE'}
+                        {p.preferredBerth && !['LB', 'MB', 'UB', 'SL', 'SU', 'NONE'].includes(p.preferredBerth) && p.preferredBerth}
                       </span>
                     </div>
+
                     <div>
                       <span className="text-text-muted block text-[8px] uppercase font-bold tracking-wider">Meal Pref</span>
                       <span className="text-text-title font-bold font-mono text-[10px] uppercase">
@@ -301,7 +325,7 @@ export default function PassengersPage() {
                   </div>
 
                   {/* Micro chip & flight SVG */}
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-between pt-1">
                     <div className="sim-chip"></div>
                     <svg className="w-5 h-5 text-text-muted transform rotate-45" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L6 12zm0 0h7.5" />
@@ -379,7 +403,7 @@ export default function PassengersPage() {
                     : 'text-text-muted border-transparent hover:text-text-title'
                 }`}
               >
-                2. Credentials & IDs
+                2. Credentials & Expirations
               </button>
               <button
                 type="button"
@@ -498,14 +522,36 @@ export default function PassengersPage() {
                       />
                     </div>
 
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-[10px] font-bold text-text-muted block mb-1 uppercase tracking-wider">Passport Number</label>
+                        <input
+                          type="text"
+                          value={passport}
+                          onChange={(e) => setPassport(e.target.value)}
+                          className="w-full bg-input-bg border border-input-border rounded-lg p-2.5 text-xs text-text-title focus:outline-none focus:border-[#8b5cf6] font-mono placeholder-text-muted"
+                          placeholder="Passport number"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-bold text-text-muted block mb-1 uppercase tracking-wider">Passport Expiry Date</label>
+                        <input
+                          type="date"
+                          value={passportExpiry}
+                          onChange={(e) => setPassportExpiry(e.target.value)}
+                          className="w-full bg-input-bg border border-input-border rounded-lg p-2.5 text-xs text-text-title focus:outline-none focus:border-[#8b5cf6] font-medium"
+                        />
+                      </div>
+                    </div>
+
                     <div>
-                      <label className="text-[10px] font-bold text-text-muted block mb-1 uppercase tracking-wider">Passport Number</label>
+                      <label className="text-[10px] font-bold text-text-muted block mb-1 uppercase tracking-wider">Visa Expiry Date</label>
                       <input
-                        type="text"
-                        value={passport}
-                        onChange={(e) => setPassport(e.target.value)}
-                        className="w-full bg-input-bg border border-input-border rounded-lg p-2.5 text-xs text-text-title focus:outline-none focus:border-[#8b5cf6] font-mono placeholder-text-muted"
-                        placeholder="Passport number"
+                        type="date"
+                        value={visaExpiry}
+                        onChange={(e) => setVisaExpiry(e.target.value)}
+                        className="w-full bg-input-bg border border-input-border rounded-lg p-2.5 text-xs text-text-title focus:outline-none focus:border-[#8b5cf6] font-medium"
                       />
                     </div>
                   </div>
@@ -534,12 +580,27 @@ export default function PassengersPage() {
                 <div className="space-y-4 animate-fade-in">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-[10px] font-bold text-text-muted block mb-1 uppercase tracking-wider">Preferred Berth/Seat</label>
+                      <label className="text-[10px] font-bold text-text-muted block mb-1 uppercase tracking-wider">Flight Seat Preference</label>
+                      <select
+                        value={preferredSeat}
+                        onChange={(e) => setPreferredSeat(e.target.value)}
+                        className="w-full bg-input-bg border border-input-border rounded-lg p-2.5 text-xs text-text-title focus:outline-none focus:border-[#8b5cf6] font-medium"
+                      >
+                        <option value="NONE">No Preference</option>
+                        <option value="WINDOW">Window Seat</option>
+                        <option value="AISLE">Aisle Seat</option>
+                        <option value="EXIT">Exit Row</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="text-[10px] font-bold text-text-muted block mb-1 uppercase tracking-wider">Train Berth Preference</label>
                       <select
                         value={preferredBerth}
                         onChange={(e) => setPreferredBerth(e.target.value)}
                         className="w-full bg-input-bg border border-input-border rounded-lg p-2.5 text-xs text-text-title focus:outline-none focus:border-[#8b5cf6] font-medium"
                       >
+                        <option value="NONE">No Preference</option>
                         <option value="LB">Lower Berth (LB)</option>
                         <option value="MB">Middle Berth (MB)</option>
                         <option value="UB">Upper Berth (UB)</option>
@@ -548,7 +609,7 @@ export default function PassengersPage() {
                       </select>
                     </div>
 
-                    <div>
+                    <div className="sm:col-span-2">
                       <label className="text-[10px] font-bold text-text-muted block mb-1 uppercase tracking-wider">Meal Preference</label>
                       <select
                         value={mealPreference}

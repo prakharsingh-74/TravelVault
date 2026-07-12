@@ -23,9 +23,12 @@ export async function POST(request: Request) {
       nationality,
       aadhaar,
       passport,
+      passportExpiry,
+      visaExpiry,
       mobile,
       email,
       preferredBerth,
+      preferredSeat,
       mealPreference
     } = body;
 
@@ -46,9 +49,12 @@ export async function POST(request: Request) {
           nationality,
           aadhaar: aadhaar || null,
           passport: passport || null,
+          passportExpiry: passportExpiry || null,
+          visaExpiry: visaExpiry || null,
           mobile: mobile || null,
           email: email || null,
           preferredBerth: preferredBerth || null,
+          preferredSeat: preferredSeat || null,
           mealPreference: mealPreference || null,
           updatedAt: new Date()
         })
@@ -66,9 +72,12 @@ export async function POST(request: Request) {
           nationality,
           aadhaar: aadhaar || null,
           passport: passport || null,
+          passportExpiry: passportExpiry || null,
+          visaExpiry: visaExpiry || null,
           mobile: mobile || null,
           email: email || null,
           preferredBerth: preferredBerth || null,
+          preferredSeat: preferredSeat || null,
           mealPreference: mealPreference || null,
           createdAt: new Date(),
           updatedAt: new Date()
@@ -88,9 +97,12 @@ export async function POST(request: Request) {
         nationality: savedPassenger.nationality,
         aadhaar: savedPassenger.aadhaar,
         passport: savedPassenger.passport,
+        passportExpiry: savedPassenger.passportExpiry,
+        visaExpiry: savedPassenger.visaExpiry,
         mobile: savedPassenger.mobile,
         email: savedPassenger.email,
         preferredBerth: savedPassenger.preferredBerth,
+        preferredSeat: savedPassenger.preferredSeat,
         mealPreference: savedPassenger.mealPreference
       });
     } catch (indexError) {

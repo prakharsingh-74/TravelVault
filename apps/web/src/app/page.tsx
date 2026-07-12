@@ -28,7 +28,7 @@ export default async function DashboardPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border-main pb-6">
         <div>
           <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-text-title via-text-title to-text-muted bg-clip-text text-transparent">
-            TravelVault Dashboard
+            Dashboard
           </h1>
           <p className="text-xs text-text-muted mt-1">
             Local-first AI credential manager and autocomplete utility for modern travelers.

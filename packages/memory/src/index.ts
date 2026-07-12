@@ -178,9 +178,12 @@ Gender: ${passenger.gender}
 Nationality: ${passenger.nationality}
 Aadhaar Number: ${passenger.aadhaar || 'Not Provided'}
 Passport Number: ${passenger.passport || 'Not Provided'}
+Passport Expiry: ${passenger.passportExpiry || 'Not Provided'}
+Visa Expiry: ${passenger.visaExpiry || 'Not Provided'}
 Mobile: ${passenger.mobile || 'Not Provided'}
 Email: ${passenger.email || 'Not Provided'}
-Preferred Berth/Seat: ${passenger.preferredBerth || 'No Preference'}
+Preferred Berth: ${passenger.preferredBerth || 'No Preference'}
+Preferred Seat: ${passenger.preferredSeat || 'No Preference'}
 Meal Preference: ${passenger.mealPreference || 'No Preference'}
 ID: ${passenger.id}`;
 }

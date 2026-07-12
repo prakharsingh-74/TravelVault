@@ -12,6 +12,7 @@ export interface SiteRules {
     gender?: FieldSelector[];
     nationality?: FieldSelector[];
     berth?: FieldSelector[];
+    seat?: FieldSelector[];
     meal?: FieldSelector[];
     mobile?: FieldSelector[];
     email?: FieldSelector[];
