@@ -4,6 +4,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   const passengerSelect = document.getElementById('passengerSelect');
   const autofillBtn = document.getElementById('autofillBtn');
   const statusMsg = document.getElementById('statusMsg');
+  const statusDot = document.getElementById('statusDot');
+  const openVaultBtn = document.getElementById('openVaultBtn');
+
+  // Open Web Vault Dashboard in new tab
+  openVaultBtn.addEventListener('click', () => {
+    chrome.tabs.create({ url: LOCAL_SERVER });
+  });
 
   // Load passengers from Next.js server
   try {
@@ -14,8 +21,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     passengerSelect.innerHTML = '';
     
     if (passengers.length === 0) {
-      passengerSelect.innerHTML = '<option value="">No passengers found</option>';
-      statusMsg.textContent = 'Please add a profile in TravelVault Web UI.';
+      passengerSelect.innerHTML = '<option value="">No profiles found</option>';
+      statusMsg.textContent = 'Add a profile in the Web Dashboard.';
+      statusDot.className = 'status-dot warning';
       return;
     }
 
@@ -27,12 +35,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     autofillBtn.disabled = false;
-    statusMsg.textContent = 'Ready to autofill.';
+    statusMsg.textContent = 'Ready to autofill';
+    statusDot.className = 'status-dot active';
   } catch (error) {
     console.error(error);
     passengerSelect.innerHTML = '<option value="">Offline</option>';
-    statusMsg.className = 'status error';
-    statusMsg.textContent = 'TravelVault Local App not running.';
+    statusDot.className = 'status-dot error';
+    statusMsg.textContent = 'Local App not running';
   }
 
   // Handle autofill action
@@ -40,14 +49,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     const passengerId = passengerSelect.value;
     if (!passengerId) return;
 
-    statusMsg.textContent = 'Analyzing form and fetching selectors...';
+    statusMsg.textContent = 'Analyzing booking form...';
+    statusDot.className = 'status-dot warning';
     autofillBtn.disabled = true;
 
     try {
       // 1. Get current active tab
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
       if (!tab || !tab.url) {
-        throw new Error('No active travel booking tab found.');
+        throw new Error('No active booking tab found.');
       }
 
       // 2. Fetch selectors and values from local Next.js server
@@ -58,13 +68,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
 
       if (!res.ok) {
-        throw new Error('Failed to retrieve matching autofill fields.');
+        throw new Error('Failed to fetch matching fields.');
       }
 
       const { fields } = await res.json();
       if (!fields || fields.length === 0) {
-        statusMsg.className = 'status error';
-        statusMsg.textContent = 'No matching selectors found for this site.';
+        statusDot.className = 'status-dot error';
+        statusMsg.textContent = 'No matching fields for this website';
         autofillBtn.disabled = false;
         return;
       }
@@ -76,11 +86,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         args: [fields]
       });
 
-      statusMsg.className = 'status success';
+      statusDot.className = 'status-dot active';
       statusMsg.textContent = `Autofilled ${fields.length} fields successfully!`;
     } catch (err) {
-      statusMsg.className = 'status error';
-      statusMsg.textContent = err.message || 'Autofill failed.';
+      statusDot.className = 'status-dot error';
+      statusMsg.textContent = err.message || 'Autofill failed';
     } finally {
       autofillBtn.disabled = false;
     }

@@ -2,124 +2,309 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <!-- Import Outfit Font for premium modern typography -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #09090b 0%, #111115 100%);
+      --card-bg: rgba(255, 255, 255, 0.03);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent-gradient: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+      --text-main: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --input-bg: #18181b;
+      --input-border: #27272a;
+    }
+
     body {
       width: 320px;
-      padding: 16px;
-      background-color: #0c0c0e;
-      color: #fafafa;
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      padding: 20px;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      font-family: 'Outfit', system-ui, -apple-system, sans-serif;
       margin: 0;
       box-sizing: border-box;
+      overflow: hidden;
+      position: relative;
     }
+
+    /* Ambient glow backgrounds */
+    .ambient-glow {
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: #8b5cf6;
+      filter: blur(80px);
+      opacity: 0.15;
+      top: -50px;
+      right: -50px;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Header styling */
     .header {
       display: flex;
-      items-center: center;
-      gap: 8px;
-      margin-bottom: 16px;
-      border-bottom: 1px solid #27272a;
-      padding-bottom: 12px;
+      align-items: center;
+      justify-content: space-between;
+      border-b: 1px solid var(--card-border);
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--card-border);
     }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
     .logo {
-      width: 24px;
-      height: 24px;
-      border-radius: 6px;
-      background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--accent-gradient);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: bold;
-      font-size: 11px;
+      font-weight: 800;
+      font-size: 12px;
       color: white;
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
     }
+
     .title {
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 15px;
+      font-weight: 700;
       margin: 0;
+      letter-spacing: -0.3px;
+      background: linear-gradient(to right, #ffffff, #d4d4d8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
+
     .subtitle {
-      font-size: 9px;
-      color: #a1a1aa;
+      font-size: 8.5px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: block;
+      margin-top: 1px;
+      font-weight: 600;
+    }
+
+    .web-vault-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      transition: all 0.2s ease;
+    }
+
+    .web-vault-btn:hover {
+      color: var(--text-main);
+      border-color: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    /* Form control Card */
+    .form-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 14px;
+      backdrop-filter: blur(10px);
+    }
+
+    label {
+      display: block;
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
-    .form-group {
-      margin-bottom: 16px;
+
+    .select-wrapper {
+      position: relative;
     }
-    label {
-      display: block;
-      font-size: 11px;
-      color: #a1a1aa;
-      margin-bottom: 6px;
-      font-weight: 500;
-    }
+
     select {
       width: 100%;
-      background-color: #18181b;
-      border: 1px solid #27272a;
+      background-color: var(--input-bg);
+      border: 1px solid var(--input-border);
       border-radius: 8px;
-      padding: 8px 10px;
-      color: white;
-      font-size: 13px;
+      padding: 10px 12px;
+      color: var(--text-main);
+      font-size: 12px;
+      font-weight: 500;
       outline: none;
       box-sizing: border-box;
+      appearance: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
     }
+
     select:focus {
       border-color: #8b5cf6;
+      box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.15);
     }
-    button {
+
+    .select-chevron {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: var(--text-muted);
+    }
+
+    /* Premium Button designs */
+    .btn-primary {
       width: 100%;
-      background: linear-gradient(90deg, #8b5cf6, #3b82f6);
+      background: var(--accent-gradient);
       border: none;
       color: white;
-      border-radius: 8px;
-      padding: 10px;
-      font-weight: 600;
+      border-radius: 10px;
+      padding: 12px;
+      font-weight: 700;
       font-size: 13px;
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(139, 92, 246, 0.15);
-      transition: opacity 0.2s ease;
+      box-shadow: 0 4px 16px rgba(139, 92, 246, 0.25);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
-    button:hover {
-      opacity: 0.9;
+
+    .btn-primary:hover:not(:disabled) {
+      opacity: 0.95;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(139, 92, 246, 0.35);
     }
-    button:disabled {
-      opacity: 0.5;
+
+    .btn-primary:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.4;
       cursor: not-allowed;
+      box-shadow: none;
     }
-    .status {
+
+    /* Status indicator info */
+    .status-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding-top: 4px;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--text-muted);
+      transition: all 0.3s ease;
+    }
+
+    .status-dot.active {
+      background-color: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      animation: pulse 2s infinite;
+    }
+
+    .status-dot.error {
+      background-color: #ef4444;
+      box-shadow: 0 0 8px #ef4444;
+    }
+
+    .status-dot.warning {
+      background-color: #f59e0b;
+      box-shadow: 0 0 8px #f59e0b;
+    }
+
+    .status-text {
       font-size: 11px;
-      text-align: center;
-      color: #a1a1aa;
-      margin-top: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+      transition: all 0.2s ease;
     }
-    .status.success {
-      color: #34d399;
-    }
-    .status.error {
-      color: #f87171;
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); opacity: 0.5; }
+      50% { transform: scale(1.1); opacity: 1; }
+      100% { transform: scale(0.95); opacity: 0.5; }
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <div class="logo">TV</div>
-    <div>
-      <h2 class="title">TravelVault</h2>
-      <span class="subtitle">Autofill Assistant</span>
+  <div class="ambient-glow"></div>
+  
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="brand-section">
+        <div class="logo">TV</div>
+        <div>
+          <h2 class="title">TravelVault</h2>
+          <span class="subtitle">Autofill Assistant</span>
+        </div>
+      </div>
+      
+      <!-- Quick link button to open Web Vault Dashboard -->
+      <button id="openVaultBtn" class="web-vault-btn" title="Open Web Dashboard">
+        <svg class="w-4 h-4" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Selection card -->
+    <div class="form-card">
+      <label for="passengerSelect">Select Traveler</label>
+      <div class="select-wrapper">
+        <select id="passengerSelect">
+          <option value="">Loading profiles...</option>
+        </select>
+        <svg class="select-chevron" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Action button -->
+    <button id="autofillBtn" class="btn-primary" disabled>
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+      </svg>
+      Autofill Form
+    </button>
+
+    <!-- Status indicator footer -->
+    <div class="status-container">
+      <div id="statusDot" class="status-dot"></div>
+      <div id="statusMsg" class="status-text">Connecting to local vault...</div>
     </div>
   </div>
-
-  <div class="form-group">
-    <label for="passengerSelect">Select Passenger Profile</label>
-    <select id="passengerSelect">
-      <option value="">Loading profiles...</option>
-    </select>
-  </div>
-
-  <button id="autofillBtn" disabled>Autofill Form</button>
-
-  <div id="statusMsg" class="status">Connecting to local vault...</div>
 
   <script src="popup.js"></script>
 </body>
