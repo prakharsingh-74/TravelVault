@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db, documents, passengers } from '@travelvault/db';
-import { indexDocument } from '@travelvault/memory';
+import { indexDocument, generateText } from '@travelvault/memory';
 import { eq } from 'drizzle-orm';
 import { extractTextFromPdf } from '../../../lib/pdfExtractor';
 import { writeFile, mkdir } from 'fs/promises';
@@ -72,6 +72,46 @@ export async function POST(request: Request) {
 
     if (!name || !type || !passengerId) {
       return NextResponse.json({ error: 'Name, Type, and Passenger ID are required.' }, { status: 400 });
+    }
+
+    // AI receipt text extraction to structured JSON
+    if (type === 'Receipt' && ocrText) {
+      try {
+        const prompt = `You are a receipt details extractor. Analyze the following receipt text and extract the details strictly in this JSON format:
+{
+  "merchant": "Store or merchant name",
+  "amount": number_amount_only,
+  "currency": "INR or USD or EUR etc.",
+  "date": "YYYY-MM-DD",
+  "category": "Food" or "Transport" or "Hotel" or "Other"
+}
+Return only the raw JSON. No explanation, no markdown backticks, no notes.
+Receipt Text:
+${ocrText}`;
+
+        const rawResult = await generateText(prompt);
+        const jsonMatch = rawResult.match(/\{[\s\S]*?\}/);
+        if (jsonMatch) {
+          ocrText = jsonMatch[0];
+        } else {
+          ocrText = JSON.stringify({
+            merchant: name,
+            amount: 0,
+            currency: 'INR',
+            date: new Date().toISOString().split('T')[0],
+            category: 'Other'
+          });
+        }
+      } catch (err) {
+        console.error('Failed to parse receipt with AI:', err);
+        ocrText = JSON.stringify({
+          merchant: name,
+          amount: 0,
+          currency: 'INR',
+          date: new Date().toISOString().split('T')[0],
+          category: 'Other'
+        });
+      }
     }
 
     // Save document to DB
